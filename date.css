@@ -40,6 +40,8 @@ h1, h2, li {
     color: #000000;
 }
 
+
+
 .toggle-button {
     font-size: 24px;
     border: none;
@@ -152,39 +154,27 @@ body.dark #reset-button {
     color: #a6a6a6;
 }
 
-/* Footer container */
 .footer {
-    display: flex;
-    justify-content: space-between;  /* Aligns the text and button on the same line */
-    align-items: center;  /* Vertically center the items */
-     padding-right: 10%; 
-        padding-left: 10%;
-        
-    width: 100%;  /* Ensure the footer takes the full width */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  
+  width: 100%;
 }
-
-/* Footer text styling */
-footer p {
-    margin: 0;  /* Removes default margin from <p> */
-    font-size: 1rem;  /* Adjust text size as needed */
-}
-
 /* Button styling */
 #btnInstall {
     background-color: #246519;
     color: white;
-    font-size: 1rem;  /* Increased font size for better visibility */
-    padding: 10px;
-    border-radius: 100px;
-    border: none;
-    transition: background-color 0.3s ease, transform 0.2s;
+  
 }
 
 
 /* Media query for mobile responsiveness */
 @media (max-width: 768px) {
     body {
-        font-size: 15px;
+        font-size: 14px;
     }
 
     h1 {
@@ -192,7 +182,7 @@ footer p {
     }
 
     .date-picker {
-        gap: 10px;
+        gap: 5px;
     }
 
     #yymmdd {
@@ -212,26 +202,10 @@ footer p {
 
     .footer {
          
-        text-align: center;}
+        text-align: center;
+        }
 
-   #btnInstall {
-    background-color: #246519;
-    color: white;
-    font-size: 1rem;
-    padding: 10px 20px;
-    border-radius: 100px;
-    border: none;
-    transition: background-color 0.3s ease, transform 0.2s;
-    display: flex;
-    align-items: center;
-}}
-
-@media (min-width: 768px) {
-    .footer {
-        padding-right: 30%; 
-        padding-left: 30%;
-       
-    }
+  
 }
 
 @media (min-width: 1020px) {
