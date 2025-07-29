@@ -200,74 +200,51 @@ const themeToggle = document.getElementById('themeToggle');
 
 
 document.addEventListener('DOMContentLoaded', () => {
-  const footer = document.querySelector('.footer');
   const btnInstall = document.getElementById('btnInstall');
   let deferredInstallPrompt;
 
-  // Check if the app is running as a PWA (Standalone mode)
+  // Show the install button only if app is not in PWA mode
   const isPWA = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
 
-  // If the app is already installed as a PWA, update the footer content
-  if (isPWA) {
-    if (footer) {
-      footer.innerHTML = `
-        <p>&nbsp;&nbsp;&nbsp;Copyright &nbsp;© &nbsp;&nbsp;2024-2025&nbsp;&nbsp;|&nbsp;&nbsp;Date Mate</p>
-      `;
-    }
-
-    // Hide the install button as the app is installed
-    if (btnInstall) {
-      btnInstall.style.display = 'none';
-    }
-  } else {
-    // Show install button on web version if app is not installed
-    if (btnInstall) {
-      btnInstall.style.display = 'block';
-      btnInstall.textContent = 'Install App';
-    }
+  if (!isPWA && btnInstall) {
+    btnInstall.style.display = 'block';
+    btnInstall.innerHTML = 'Install App <i class="fa-solid fa-download"></i>';
+  } else if (btnInstall) {
+    btnInstall.style.display = 'none'; // Hide if already installed
   }
 
-  // Listen for 'beforeinstallprompt' to save the install prompt
+  // Save the prompt when available
   window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault(); // Prevent the default install prompt from showing automatically
-    deferredInstallPrompt = e; // Save the install prompt
+    e.preventDefault();
+    deferredInstallPrompt = e;
     console.log('Install prompt saved');
-    
-    // Show the install button when the prompt is available
+
     if (btnInstall) {
       btnInstall.style.display = 'block';
-      btnInstall.textContent = 'Install App';
+      btnInstall.innerHTML = 'Install App <i class="fa-solid fa-download"></i>';
     }
   });
 
-  // Listen for install button click
-  btnInstall.addEventListener('click', () => {
+  // Install button click handler
+  btnInstall?.addEventListener('click', () => {
     if (deferredInstallPrompt) {
-      deferredInstallPrompt.prompt(); // Show the install prompt
+      deferredInstallPrompt.prompt();
       deferredInstallPrompt.userChoice.then((choice) => {
         if (choice.outcome === 'accepted') {
           console.log('User accepted the installation');
-          btnInstall.style.display = 'none'; // Hide the install button after installation
+          btnInstall.style.display = 'none';
         } else {
           console.log('User dismissed the installation');
         }
       });
     } else {
-      // If the app is already installed or there's no install prompt available
-      alert('This app is already installed on your device. or Install prompt is not available now.');
+      alert('Unsupported browser or app is already installed.');
     }
   });
 
-  // Listen for the 'appinstalled' event and update the footer
+  // Hide install button after installation
   window.addEventListener('appinstalled', () => {
-    console.log('App installed, hiding the button');
-    btnInstall.style.display = 'none'; // Hide the install button after the app is installed
-
-    // Update the footer when the app is installed as a PWA
-    if (footer) {
-      footer.innerHTML = `
-        <p>&nbsp;&nbsp;&nbsp;Copyright &nbsp;© &nbsp;&nbsp;2024-2025&nbsp;&nbsp;|&nbsp;&nbsp;Date Mate</p>
-      `;
-    }
+    console.log('App installed');
+    if (btnInstall) btnInstall.style.display = 'none';
   });
 });
