@@ -201,21 +201,27 @@ const themeToggle = document.getElementById('themeToggle');
 
 document.addEventListener('DOMContentLoaded', () => {
   const btnInstall = document.getElementById('btnInstall');
+  const footer = document.getElementById('appFooter');
   let deferredInstallPrompt;
 
-  // Show the install button only if app is not in PWA mode
+  // Detect if app is running in PWA mode
   const isPWA = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
 
-  if (!isPWA && btnInstall) {
-    btnInstall.style.display = 'block';
-    btnInstall.innerHTML = 'Install App <i class="fa-solid fa-download"></i>';
-  } else if (btnInstall) {
-    btnInstall.style.display = 'none'; // Hide if already installed
+  if (isPWA) {
+    // App is already installed: hide footer and install button
+    if (footer) footer.style.display = 'none';
+    if (btnInstall) btnInstall.style.display = 'none';
+  } else {
+    // App is not installed yet
+    if (btnInstall) {
+      btnInstall.style.display = 'block';
+      btnInstall.innerHTML = 'Install App <i class="fa-solid fa-download"></i>';
+    }
   }
 
-  // Save the prompt when available
+  // Listen for the install prompt
   window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent the default mini-infobar
     deferredInstallPrompt = e;
     console.log('Install prompt saved');
 
@@ -225,26 +231,29 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
 
-  // Install button click handler
+  // When user clicks the install button
   btnInstall?.addEventListener('click', () => {
     if (deferredInstallPrompt) {
       deferredInstallPrompt.prompt();
-      deferredInstallPrompt.userChoice.then((choice) => {
-        if (choice.outcome === 'accepted') {
+
+      deferredInstallPrompt.userChoice.then((choiceResult) => {
+        if (choiceResult.outcome === 'accepted') {
           console.log('User accepted the installation');
-          btnInstall.style.display = 'none';
+          if (btnInstall) btnInstall.style.display = 'none';
+          if (footer) footer.style.display = 'none';
         } else {
           console.log('User dismissed the installation');
         }
       });
     } else {
-      alert('Unsupported browser or app is already installed.');
+      alert('App is already installed or not supported.');
     }
   });
 
-  // Hide install button after installation
+  // After installation event
   window.addEventListener('appinstalled', () => {
     console.log('App installed');
     if (btnInstall) btnInstall.style.display = 'none';
+    if (footer) footer.style.display = 'none';
   });
 });
